@@ -25,7 +25,7 @@ def load_agents():
                 sys.modules['agents_dir.{0}'.format(modname)],
                 inspect.isclass):
             if 'agents_dir.{0}'.format(modname) == obj.__module__ and\
-                    '{0}Class'.format(modname) == name and \
+                    '{0}Class'.format(modname) == name and\
                     issubclass(obj, agents_dir.Agent):
                 all_agents[modname] = obj
 

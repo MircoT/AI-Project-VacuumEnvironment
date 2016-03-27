@@ -116,8 +116,8 @@ class AimaUI(App):
         wid.canvas.clear()
         self.counter.text = str(self.counter_steps)
         n_x, n_y = max([thing.location for thing in self.env.things])
-        tile_x = wid.width / (n_x + 1)
-        tile_y = wid.height / (n_y + 1)
+        tile_x = wid.width / float(n_x + 1)
+        tile_y = wid.height / float(n_y + 1)
         labelA, labelB = labels
         with wid.canvas:
             for thing in [thing for thing in self.env.things

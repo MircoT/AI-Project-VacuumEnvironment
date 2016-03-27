@@ -16,10 +16,10 @@ class ManhattanAgentClass(Agent):
             'W': 'GoWest'
         }
         self.moves = {
-            'N': lambda tup: (tup[0], tup[1] - 1),
-            'S': lambda tup: (tup[0], tup[1] + 1),
-            'E': lambda tup: (tup[0] + 1, tup[1]),
-            'W': lambda tup: (tup[0] - 1, tup[1])
+            'N': lambda tup: (tup[0] +1, tup[1]),
+            'S': lambda tup: (tup[0] -1, tup[1]),
+            'E': lambda tup: (tup[0], tup[1]+1),
+            'W': lambda tup: (tup[0], tup[1]-1)
         }
         self.reversed = {
             'N': 'S',
