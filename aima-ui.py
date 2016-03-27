@@ -310,6 +310,31 @@ class AimaUI(App):
         self.counter.text = str(self.counter_steps)
         Clock.schedule_once(partial(self.reset_popup, popup), timeout=1)
 
+    def reload_agents(self, labels, spinners, wid, *largs):
+        """Reload all agents classes."""
+        self.running = False
+        self.counter_steps = 0
+        self.scoreA = 0
+        self.scoreB = 0
+        labelA, labelB = labels
+        labelA.text = self.get_scores()[0]
+        labelB.text = self.get_scores()[1]
+        global ALL_AGENTS
+        global ALL_MAPS
+        ALL_AGENTS = agents_list.load_agents()
+        ALL_MAPS = envs_list.ALL_MAPS
+        spinnerA, spinnerB, spinnerMap = spinners
+        spinnerA.values = sorted(
+            [agent for agent in list(ALL_AGENTS.keys())]) + ["Agent A"]
+        spinnerB.values = sorted(
+            [agent for agent in list(ALL_AGENTS.keys())]) + ["Agent B"]
+        spinnerMap.values = sorted(
+            [map for map in list(ALL_MAPS.keys())]) + ["Maps"]
+        self.counter.text = str(self.counter_steps)
+        self.__initialize_env()
+        self.initialized = True
+        self.update_canvas(labels, wid)
+
     def on_resize(self, width, eight):
         self.update_canvas()
 
@@ -398,6 +423,15 @@ class AimaUI(App):
                                       agentB_spinner, maps_spinner),
                                      wid)
 
+        self.partial_reload = partial(self.reload_agents,
+                                      labels,
+                                      (agentA_spinner,
+                                       agentB_spinner, maps_spinner),
+                                      wid)
+
+        btn_reload = Button(text='Reload',
+                           on_press=self.partial_reload)
+
         btn_reset = Button(text='Reset',
                            on_press=self.partial_reset)
 
@@ -410,6 +444,7 @@ class AimaUI(App):
         action_layout.add_widget(self.counter)
         action_layout.add_widget(self.btn_run)
         action_layout.add_widget(btn_stop)
+        action_layout.add_widget(btn_reload)
         action_layout.add_widget(btn_reset)
 
         agents_layout = BoxLayout(size_hint=(1, None), height=50)

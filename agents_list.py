@@ -3,17 +3,23 @@
 import sys
 import inspect
 import pkgutil
-
-__all__ = ["load_agents"]
-
-#
-# All Agents TABLE
-ALL_AGENTS = {}
+if sys.version_info.major > 2:
+    from importlib import reload
 
 import agents_dir
 
+__all__ = ["load_agents"]
+
+
+
 def load_agents():
-    reload(agents_dir)
+
+    for importer, modname, ispkg in pkgutil.iter_modules(agents_dir.__path__):
+        if modname != 'agents':
+            reload(sys.modules['{0}.AvalonVacuumAgent'.format('agents_dir')])
+
+    all_agents = {}
+
     for importer, modname, ispkg in pkgutil.iter_modules(agents_dir.__path__):
         for name, obj in inspect.getmembers(
                 sys.modules['agents_dir.{0}'.format(modname)],
@@ -21,6 +27,6 @@ def load_agents():
             if 'agents_dir.{0}'.format(modname) == obj.__module__ and\
                     '{0}Class'.format(modname) == name and \
                     issubclass(obj, agents_dir.Agent):
-                ALL_AGENTS[modname] = obj
+                all_agents[modname] = obj
 
-    return ALL_AGENTS
+    return all_agents
