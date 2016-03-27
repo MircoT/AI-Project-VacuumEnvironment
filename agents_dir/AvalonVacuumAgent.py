@@ -1,5 +1,5 @@
 from . agents import *
-
+from random import randint
 
 class AvalonVacuumAgentClass(Agent):
 
@@ -65,7 +65,8 @@ class AvalonVacuumAgentClass(Agent):
             if findCoord(self.coord, index) not in self.walls:
                 return self.actions[index]
 
-        def program((status, bump)):
+        def program(xxx_todo_changeme):
+            (status, bump) = xxx_todo_changeme
             if self.curr != 'NoOp':
                 if bump == 'Bump':
                     if self.curr == 'GoEast':

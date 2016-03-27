@@ -24,7 +24,7 @@ import agents_list
 import envs_list
 from os import path
 
-ALL_AGENTS = agents_list.ALL_AGENTS
+ALL_AGENTS = agents_list.load_agents()
 ALL_MAPS = envs_list.ALL_MAPS
 
 
@@ -204,7 +204,7 @@ class AimaUI(App):
                 else:
                     self.counter_steps += 1
             if not self.running:
-                    return False
+                return False
             self.env.step()
             self.update_canvas(labels, wid)
 
@@ -295,14 +295,15 @@ class AimaUI(App):
         reload(agents_list)
         global ALL_AGENTS
         global ALL_MAPS
-        ALL_AGENTS = agents_list.ALL_AGENTS
+        ALL_AGENTS = agents_list.load_agents()
         ALL_MAPS = envs_list.ALL_MAPS
         spinnerA, spinnerB, spinnerMap = spinners
         spinnerA.values = sorted(
-            [agent for agent in ALL_AGENTS.keys()]) + ["Agent A"]
+            [agent for agent in list(ALL_AGENTS.keys())]) + ["Agent A"]
         spinnerB.values = sorted(
-            [agent for agent in ALL_AGENTS.keys()]) + ["Agent B"]
-        spinnerMap.values = sorted([map for map in ALL_MAPS.keys()]) + ["Maps"]
+            [agent for agent in list(ALL_AGENTS.keys())]) + ["Agent B"]
+        spinnerMap.values = sorted(
+            [map for map in list(ALL_MAPS.keys())]) + ["Maps"]
         spinnerA.text = "Agent A"
         spinnerB.text = "Agent B"
         spinnerMap.text = "Maps"
@@ -343,7 +344,7 @@ class AimaUI(App):
             text_size=(95, None),
             haligh="center",
             shorten=True,
-            values=sorted([agent for agent in ALL_AGENTS.keys()]) +
+            values=sorted([agent for agent in list(ALL_AGENTS.keys())]) +
             ["Agent A"],
             size=(100, 44)
         )
@@ -352,7 +353,7 @@ class AimaUI(App):
             text='Agent B',
             text_size=(95, None),
             shorten=True,
-            values=sorted([agent for agent in ALL_AGENTS.keys()]) +
+            values=sorted([agent for agent in list(ALL_AGENTS.keys())]) +
             ["Agent B"],
             size=(100, 44)
         )
@@ -361,7 +362,7 @@ class AimaUI(App):
             text='Maps',
             text_size=(95, None),
             shorten=True,
-            values=sorted([map for map in ALL_MAPS.keys()]) + ["Maps"],
+            values=sorted([map for map in list(ALL_MAPS.keys())]) + ["Maps"],
             size=(100, 44)
         )
 

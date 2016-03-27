@@ -36,7 +36,7 @@ class EconomicVacuumAgent_EVA01Class(Agent):
         def propagateClean2(position):
             for i in range(4):
                 pos = vector_add(self.movements[i], position)
-                if pos in self.memory and (i + 2) % 4 in self.memory[pos].keys():
+                if pos in self.memory and (i + 2) % 4 in list(self.memory[pos].keys()):
                     self.memory[pos][(i + 2) % 4] /= 2
                 elif position in self.memory and i in self.memory[position] and self.memory[position][i] != 0:
                     self.memory[pos] = {0: 100, 1: 100, 2: 100, 3: 100}
@@ -49,10 +49,7 @@ class EconomicVacuumAgent_EVA01Class(Agent):
 
         def mapDict(f, dictionary):
             return dict(
-                map(
-                    lambda (k, v): (k, f(v)),
-                    dictionary.iteritems()
-                )
+                [(k_v[0], f(k_v[1])) for k_v in iter(dictionary.items())]
             )
 
         def transDir(action):
@@ -76,7 +73,7 @@ class EconomicVacuumAgent_EVA01Class(Agent):
                 if len(self.memory[point]) < 4:
                     mapDict(lambda x: 100, self.memory[point])
                 elif len(self.memory[point]) == 4:
-                    if any([val for val in self.memory[point].values() if val >= 100]):
+                    if any([val for val in list(self.memory[point].values()) if val >= 100]):
                         surroudedByClean = False
                     else:
                         surroudedByClean = True
@@ -96,16 +93,17 @@ class EconomicVacuumAgent_EVA01Class(Agent):
             if self.position in self.memory:
                 toPop = reduceMapSize()
                 for bad in toPop:
-                    print "I'm breaking", bad
+                    print("I'm breaking", bad)
                     self.memory.pop(bad)
-                if any([val for val in self.memory[self.position].values() if val != 0]):
+                if any([val for val in list(self.memory[self.position].values()) if val != 0]):
                     retVal = keywithmaxval(self.memory[self.position])
                 else:
                     return "NoOp"
                 return retVal
             return "NoOp"
 
-        def program((status, bump)):
+        def program(xxx_todo_changeme):
+            (status, bump) = xxx_todo_changeme
             if self.curr == "NoOp":
                 return self.curr
             updatePosition(bump)

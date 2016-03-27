@@ -38,6 +38,7 @@ EnvCanvas ## Canvas to display the environment of an EnvGUI
 from utils import *
 import random
 import copy
+import collections
 
 #______________________________________________________________________________
 
@@ -57,7 +58,7 @@ class Thing(object):
 
     def show_state(self):
         "Display the agent's internal state.  Subclasses should override."
-        print "I don't know how to show_state."
+        print("I don't know how to show_state.")
 
     def display(self, canvas, x, y, width, height):
         # Do we need this?
@@ -85,8 +86,8 @@ class Agent(Thing):
         self.img = None
         if program is None:
             def program(percept):
-                return raw_input('Percept=%s; action? ' % percept)
-        assert callable(program)
+                return input('Percept=%s; action? ' % percept)
+        assert isinstance(program, collections.Callable)
         self.program = program
 
     def can_grab(self, thing):
@@ -102,7 +103,7 @@ def TraceAgent(agent):
 
     def new_program(percept):
         action = old_program(percept)
-        print 'loc:%s: perf:%s %s percept:%s action:%s' % (agent.location, agent.performance, agent, percept, action)
+        print('loc:%s: perf:%s %s percept:%s action:%s' % (agent.location, agent.performance, agent, percept, action))
         return action
     agent.program = new_program
     return agent
@@ -186,7 +187,8 @@ def TableDrivenVacuumAgent():
 
 def ReflexVacuumAgent():
     "A reflex agent for the two-state vacuum environment. [Fig. 2.8]"
-    def program((location, status)):
+    def program(xxx_todo_changeme):
+        (location, status) = xxx_todo_changeme
         if status == 'Dirty':
             return 'Suck'
         elif location == loc_A:
@@ -200,8 +202,9 @@ def ModelBasedVacuumAgent():
     "An agent that keeps track of what locations are clean or dirty."
     model = {loc_A: None, loc_B: None}
 
-    def program((location, status)):
+    def program(xxx_todo_changeme1):
         "Same as ReflexVacuumAgent, except if everything is clean, do NoOp."
+        (location, status) = xxx_todo_changeme1
         model[location] = status  # Update the model here
         if model[loc_A] == model[loc_B] == 'Clean':
             return 'NoOp'
@@ -237,11 +240,11 @@ class Environment(object):
 
     def percept(self, agent):
         "Return the percept that the agent sees at this point. (Implement this.)"
-        abstract
+        return NotImplementedError
 
     def execute_action(self, agent, action):
         "Change the world to reflect this action. (Implement this.)"
-        abstract
+        return NotImplementedError
 
     def default_location(self, thing):
         "Default location to place a new thing with unspecified location."
@@ -304,12 +307,12 @@ class Environment(object):
                 self.add_thing(
                     REVERT[thing.__class__.__name__](), thing.location)
             self.things.remove(thing)
-        except ValueError, e:
-            print e
-            print "  in Environment delete_thing"
-            print "  Thing to be removed: %s at %s" % (thing, thing.location)
-            print "  from list: %s" % [(thing, thing.location)
-                                       for thing in self.things]
+        except ValueError as e:
+            print(e)
+            print("  in Environment delete_thing")
+            print("  Thing to be removed: %s at %s" % (thing, thing.location))
+            print("  from list: %s" % [(thing, thing.location)
+                                       for thing in self.things])
         if thing in self.agents:
             self.agents.remove(thing)
 
@@ -346,13 +349,13 @@ class XYEnvironment(Environment):
     def execute_action(self, agent, action):
         agent.bump = False
         if action == 'GoNorth':
-            self.move_to(agent, vector_add((0, -1), agent.location))
-        elif action == 'GoSouth':
-            self.move_to(agent, vector_add((0, +1), agent.location))
-        elif action == 'GoEast':
-            self.move_to(agent, vector_add((1, 0), agent.location))
-        elif action == 'GoWest':
             self.move_to(agent, vector_add((-1, 0), agent.location))
+        elif action == 'GoSouth':
+            self.move_to(agent, vector_add((+1, 0), agent.location))
+        elif action == 'GoEast':
+            self.move_to(agent, vector_add((0, +1), agent.location))
+        elif action == 'GoWest':
+            self.move_to(agent, vector_add((0, -1), agent.location))
 
     def thing_percept(self, thing, agent):  # ??? Should go to thing?
         "Return the percept for this thing."
@@ -391,7 +394,7 @@ class XYEnvironment(Environment):
         s_x, s_y = 0, 0
         for line in string.splitlines():
             for char in list(line):
-                print(s_x, s_y, char)
+                print((s_x, s_y, char))
                 self.add_thing(objs[char](), (s_x, s_y))
                 s_x += 1
             s_y += 1
@@ -589,7 +592,7 @@ def test_agent(AgentFactory, steps, envs):
         env.add_thing(agent)
         env.run(steps)
         return agent.performance
-    return mean(map(score, envs))
+    return mean(list(map(score, envs)))
 
 #_________________________________________________________________________
 

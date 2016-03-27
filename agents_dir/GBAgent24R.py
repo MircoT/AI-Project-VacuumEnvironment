@@ -32,16 +32,16 @@ class GBAgent24RClass(Agent):
             if bump == 'Bump':
                 self.envMap[location] = ([0, 0, 0, 0], -1)
                 self.envMap[location] = ([0, 0, 0, 0], -1)
-                test = tuple(map(sum, zip(list(location), [1, 0])))
+                test = tuple(map(sum, list(zip(list(location), [1, 0]))))
                 if test in self.envMap:
                     self.envMap[test][0][2] = 0
-                test = tuple(map(sum, zip(list(location), [0, 1])))
+                test = tuple(map(sum, list(zip(list(location), [0, 1]))))
                 if test in self.envMap:
                     self.envMap[test][0][3] = 0
-                test = tuple(map(sum, zip(list(location), [-1, 0])))
+                test = tuple(map(sum, list(zip(list(location), [-1, 0]))))
                 if test in self.envMap:
                     self.envMap[test][0][0] = 0
-                test = tuple(map(sum, zip(list(location), [0, -1])))
+                test = tuple(map(sum, list(zip(list(location), [0, -1]))))
                 if test in self.envMap:
                     self.envMap[test][0][1] = 0
             else:
@@ -62,8 +62,9 @@ class GBAgent24RClass(Agent):
             elif self.heading == 3:
                 return (self.position[0], self.position[1] - 1)
 
-        def program((status, bump)):
+        def program(xxx_todo_changeme):
             """The actual agent"""
+            (status, bump) = xxx_todo_changeme
             if bump == 'Bump':
                 if self.curr == "NoOp":
                     return self.curr
@@ -93,19 +94,19 @@ class GBAgent24RClass(Agent):
                     insert_location(self.position, bump,
                                     (self.heading + 2) % 4)
                     #test = tuple(map(sum, zip(list(self.position), [1, 0])))
-                    test = tuple(map(sum, zip(list(self.position), [1, 0])))
+                    test = tuple(map(sum, list(zip(list(self.position), [1, 0]))))
                     if test in self.envMap:
                         self.envMap[self.position][0][0] = 0
                         self.envMap[test][0][2] = 0
-                    test = tuple(map(sum, zip(list(self.position), [0, 1])))
+                    test = tuple(map(sum, list(zip(list(self.position), [0, 1]))))
                     if test in self.envMap:
                         self.envMap[self.position][0][1] = 0
                         self.envMap[test][0][3] = 0
-                    test = tuple(map(sum, zip(list(self.position), [-1, 0])))
+                    test = tuple(map(sum, list(zip(list(self.position), [-1, 0]))))
                     if test in self.envMap:
                         self.envMap[self.position][0][2] = 0
                         self.envMap[test][0][0] = 0
-                    test = tuple(map(sum, zip(list(self.position), [0, -1])))
+                    test = tuple(map(sum, list(zip(list(self.position), [0, -1]))))
                     if test in self.envMap:
                         self.envMap[self.position][0][3] = 0
                         self.envMap[test][0][1] = 0

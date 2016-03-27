@@ -55,14 +55,14 @@ class ManhattanAgentClass(Agent):
                 self.target = self.curr_pos
 
         def update_world():
-            for pos in self.world.keys():
-                for dir_, fun in self.moves.items():
+            for pos in list(self.world.keys()):
+                for dir_, fun in list(self.moves.items()):
                     # print("UPDATE", pos, fun(pos))
                     if (fun(pos) in self.cleaned or fun(pos) in self.walls)\
                        and dir_ in self.world[pos]:
                         self.world[pos].remove(dir_)
-            for pos in self.world.keys():
-                for dir_, fun in self.moves.items():
+            for pos in list(self.world.keys()):
+                for dir_, fun in list(self.moves.items()):
                     # print("UPDATE2", pos, fun(pos))
                     if fun(pos) in self.world and\
                        dir_ not in self.world[fun(pos)] and\
@@ -78,7 +78,7 @@ class ManhattanAgentClass(Agent):
             max_dist = max([abs(min_w[0] + max_w[0]), abs(min_w[1] + max_w[1])])
             while len(candidates) == 0 and dist < max_dist:
                 candidates = [pos for pos,
-                              act in self.world.items() if len(act) != 0 and
+                              act in list(self.world.items()) if len(act) != 0 and
                               man_w(self.curr_pos, pos) <= dist]
                 dist += 1
             return candidates
@@ -99,7 +99,7 @@ class ManhattanAgentClass(Agent):
             man_w = lambda s_c, d_c: abs(
                 s_c[0] - d_c[0]) + abs(s_c[1] - d_c[1])
             results = dict()
-            for dir_, fun in self.moves.items():
+            for dir_, fun in list(self.moves.items()):
                 weight = man_w(self.curr_pos, fun(self.curr_pos))
                 if dir_ in self.world[self.curr_pos]:
                     if weight in results:
@@ -107,7 +107,7 @@ class ManhattanAgentClass(Agent):
                     else:
                         results[weight] = [dir_]
             if len(results) == 0:
-                for dir_, fun in self.moves.items():
+                for dir_, fun in list(self.moves.items()):
                     weight = man_w(self.curr_pos, fun(self.curr_pos))
                     if weight in results:
                         results[weight].append(dir_)
@@ -138,15 +138,9 @@ class ManhattanAgentClass(Agent):
             else:
                 return new_move()
 
-        def program((status, bump)):
+        def program(xxx_todo_changeme):
             """Program of the agent."""
-            # print("___________________________")
-            # print("TARGET", self.target)
-            # print("CANDIDATES", [(pos, act)
-            #       for pos, act in self.world.items() if len(act) != 0])
-            # print("WALLS", self.walls)
-            # print("CLEANED", self.cleaned)
-
+            (status, bump) = xxx_todo_changeme
             update_pos(bump)
             update_world()
             if status == "Dirty":
