@@ -11,7 +11,11 @@ You must have [kivy](http://kivy.org/#home) installed on your system.
 
 If you have installed all the dependencies, you can run the program with:
 ```bash
-python aima-ui.py
+# To open the GUI with max 2 Agent (old program)
+python aima-ui-2a.py
+
+# To open the GUI with 4 Agent
+python aima-ui-2a.py
 ```
 For Windows and Mac you can follow the istructions here:
 
