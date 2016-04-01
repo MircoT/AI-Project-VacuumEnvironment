@@ -13,9 +13,8 @@ class DeepBumpClass(Agent):
 
         self.tempo = 0
 
-        def program(xxx_todo_changeme):
+        def program(status, bump, *largs):
 
-            (status, bump) = xxx_todo_changeme
             def propagabump():
                 coordnord = vector_add((0, 1), self.fut)
                 coordsud = vector_add((0, -1), self.fut)

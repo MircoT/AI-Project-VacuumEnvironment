@@ -1,4 +1,4 @@
-from . agents import Agent
+from . agents import Agent, Wall, Dirt, Clean
 from . AvalonVacuumAgent import AvalonVacuumAgentClass
 from . DeepBump import DeepBumpClass
 from . EconomicVacuumAgent_EVA01 import EconomicVacuumAgent_EVA01Class

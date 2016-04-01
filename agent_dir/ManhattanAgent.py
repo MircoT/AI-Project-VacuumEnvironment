@@ -8,7 +8,7 @@ class ManhattanAgentClass(Agent):
     def __init__(self):
         """Initialize the Agent."""
         Agent.__init__(self)
-        self.img = 'agent_v4.png'
+        self.img = 'agent_v4'
         self.dirs = {
             'N': 'GoNorth',
             'S': 'GoSouth',
@@ -138,9 +138,8 @@ class ManhattanAgentClass(Agent):
             else:
                 return new_move()
 
-        def program(xxx_todo_changeme):
+        def program(status, bump, *largs):
             """Program of the agent."""
-            (status, bump) = xxx_todo_changeme
             update_pos(bump)
             update_world()
             if status == "Dirty":

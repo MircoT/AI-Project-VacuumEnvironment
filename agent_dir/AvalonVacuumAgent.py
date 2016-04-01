@@ -5,7 +5,7 @@ class AvalonVacuumAgentClass(Agent):
 
     def __init__(self, noCleans=10):
         Agent.__init__(self)
-        self.img = 'agent_v5.png'
+        self.img = 'agent_v5'
         self.actions = ['GoEast', 'GoWest', 'GoNorth', 'GoSouth']
         self.coord = (0, 0)
         self.visited = [(0, 0)]
@@ -65,8 +65,8 @@ class AvalonVacuumAgentClass(Agent):
             if findCoord(self.coord, index) not in self.walls:
                 return self.actions[index]
 
-        def program(xxx_todo_changeme):
-            (status, bump) = xxx_todo_changeme
+        def program(status, bump, neighbors):
+            print(status, bump, neighbors)
             if self.curr != 'NoOp':
                 if bump == 'Bump':
                     if self.curr == 'GoEast':

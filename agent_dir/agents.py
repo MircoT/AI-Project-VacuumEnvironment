@@ -101,8 +101,8 @@ def TraceAgent(agent):
     you see what the agent is doing in the environment."""
     old_program = agent.program
 
-    def new_program(percept):
-        action = old_program(percept)
+    def new_program(*percept):
+        action = old_program(*percept)
         print('loc:%s: perf:%s %s percept:%s action:%s' % (agent.location, agent.performance, agent, percept, action))
         return action
     agent.program = new_program
@@ -264,7 +264,7 @@ class Environment(object):
         do.  If there are interactions between them, you'll need to
         override this method."""
         if not self.is_done():
-            actions = [agent.program(self.percept(agent))
+            actions = [agent.program(*self.percept(agent))
                        for agent in self.agents]
             for (agent, action) in zip(self.agents, actions):
                 self.execute_action(agent, action)
@@ -349,20 +349,31 @@ class XYEnvironment(Environment):
     def execute_action(self, agent, action):
         agent.bump = False
         if action == 'GoNorth':
-            self.move_to(agent, vector_add((-1, 0), agent.location))
-        elif action == 'GoSouth':
-            self.move_to(agent, vector_add((+1, 0), agent.location))
-        elif action == 'GoEast':
             self.move_to(agent, vector_add((0, +1), agent.location))
-        elif action == 'GoWest':
+        elif action == 'GoSouth':
             self.move_to(agent, vector_add((0, -1), agent.location))
+        elif action == 'GoEast':
+            self.move_to(agent, vector_add((+1, 0), agent.location))
+        elif action == 'GoWest':
+            self.move_to(agent, vector_add((-1, 0), agent.location))
 
     def thing_percept(self, thing, agent):  # ??? Should go to thing?
         "Return the percept for this thing."
         return thing.__class__.__name__
 
     def default_location(self, thing):
-        return (random.choice(self.width), random.choice(self.height))
+        return (random.choice(range(self.width)), random.choice(range(self.height)))
+
+    def random_location(self):
+        is_wall = True
+
+        while is_wall:
+            loc = (random.choice(range(self.width)), random.choice(range(self.height)))
+            is_wall = False
+            for thing in self.things_near(loc, 1):
+                if isinstance(thing, Wall) and thing.location == loc:
+                    is_wall = True
+        return loc
 
     def move_to(self, thing, destination):
         "Move a thing to a new location."
@@ -394,7 +405,6 @@ class XYEnvironment(Environment):
         s_x, s_y = 0, 0
         for line in string.splitlines():
             for char in list(line):
-                print((s_x, s_y, char))
                 self.add_thing(objs[char](), (s_x, s_y))
                 s_x += 1
             s_y += 1
@@ -476,7 +486,19 @@ class VacuumEnvironment(XYEnvironment):
         status = if_(self.some_things_at(agent.location, Dirt),
                      'Dirty', 'Clean')
         bump = if_(agent.bump, 'Bump', 'None')
-        return (status, bump)
+
+        neighbors = []
+        n_coordinates = []
+        for cur_n_agent in [thing for thing in self.things
+                      if isinstance(thing, Agent) and
+                      thing.location != agent.location]:
+            neighbors.append(cur_n_agent)
+        for neighbor in neighbors:
+            loc = neighbor.location
+            n_coordinates.append((loc[0]-agent.location[0],
+                                  loc[1]-agent.location[1]))
+
+        return status, bump, n_coordinates
 
     def execute_action(self, agent, action):
         if action == 'Suck':
@@ -497,9 +519,15 @@ class VacuumEnvironment(XYEnvironment):
 
     def dirty_all(self):
         "Place Dirty Everywhere"
-        for x in range(1, self.width):
-            for y in range(1, self.height):
-                self.add_dirty((x, y))
+        for y in range(1, self.height):
+            for x in range(1, self.width):
+                something = False
+                for thing in self.things:
+                    if thing.location == (x, y):
+                        something = True
+                        break
+                if not something:
+                    self.add_dirty((x, y))
 
 
 class TrivialVacuumEnvironment(Environment):

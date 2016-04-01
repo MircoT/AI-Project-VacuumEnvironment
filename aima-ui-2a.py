@@ -19,13 +19,13 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 from functools import partial
-from agents_dir.agents import *
-import agents_list
-import envs_list
+from agent_dir.agents import *
+import agent_list
+import env_list
 from os import path
 
-ALL_AGENTS = agents_list.load_agents()
-ALL_MAPS = envs_list.ALL_MAPS
+ALL_AGENTS = agent_list.load_agents()
+ALL_MAPS = env_list.get_maps()
 
 
 def check_img(img_name):
@@ -69,10 +69,10 @@ class AimaUI(App):
         self.scoreA = 0
         self.scoreB = 0
         self.agentA = "Agent A"
-        self.agentAImgDef = "img/agentA_v0.png"
+        self.agentAImgDef = "img/agent_1.png"
         self.agentAImg = None
         self.agentB = "Agent B"
-        self.agentBImgDef = "img/agentB_v0.png"
+        self.agentBImgDef = "img/agent_2.png"
         self.agentBImg = None
         self.wall_img = Image(source="img/wall.png")
         self.trash_img = Image(source="img/trash.png")
@@ -123,41 +123,40 @@ class AimaUI(App):
             for thing in [thing for thing in self.env.things
                           if isinstance(thing, Dirt) or
                           isinstance(thing, Clean)]:
-                pos_y, pos_x = thing.location
+                pos_x, pos_y = thing.location
                 if isinstance(thing, Dirt):
                     Color(0.5, 0, 0)
                     Rectangle(
                         pos=(
                             pos_x * tile_x + wid.x,
-                            n_y * tile_y - pos_y * tile_y + wid.y),
+                            pos_y * tile_y + wid.y),
                         size=(tile_x, tile_y))
                     Color(1, 1, 1, 1)
                     Rectangle(texture=self.trash_img.texture,
                               pos=(
-                                  pos_x * tile_x + wid.x + (tile_x / 4),
-                                  n_y * tile_y - pos_y *
-                                  tile_y + wid.y + (tile_y / 4)
+                                  pos_x * tile_x + wid.x,
+                                  pos_y * tile_y + wid.y
                               ),
-                              size=(tile_x / 2, tile_y / 2))
+                              size=(tile_x, tile_y))
                 elif isinstance(thing, Clean):
                     Color(0.1, 0.5, 0.1)
                     Rectangle(
                         pos=(
                             pos_x * tile_x + wid.x,
-                            n_y * tile_y - pos_y * tile_y + wid.y),
+                            pos_y * tile_y + wid.y),
                         size=(tile_x, tile_y))
             for thing in [thing for thing in self.env.things
                           if isinstance(thing, Wall)]:
-                pos_y, pos_x = thing.location
+                pos_x, pos_y = thing.location
                 Color(1, 1, 1, 1)
                 Rectangle(texture=self.wall_img.texture,
                           pos=(pos_x * tile_x + wid.x,
-                               n_y * tile_y - pos_y * tile_y + wid.y),
+                               pos_y * tile_y + wid.y),
                           size=(tile_x, tile_y))
             for thing in [thing for thing in self.env.things
                           if isinstance(thing, ALL_AGENTS.get(self.agentA, Agent)) or
                           isinstance(thing, ALL_AGENTS.get(self.agentB, Agent))]:
-                pos_y, pos_x = thing.location
+                pos_x, pos_y = thing.location
                 if self.agentA in ALL_AGENTS and\
                    isinstance(thing, ALL_AGENTS[self.agentA]):
                     self.scoreA = thing.performance
@@ -165,7 +164,7 @@ class AimaUI(App):
                     Color(1, 1, 1, 1)
                     Rectangle(texture=self.agentAImg.texture,
                               pos=(pos_x * tile_x + wid.x,
-                                   n_y * tile_y - pos_y * tile_y + wid.y),
+                                   pos_y * tile_y + wid.y),
                               size=(tile_x, tile_y))
                 if self.agentB in ALL_AGENTS and\
                    isinstance(thing, ALL_AGENTS[self.agentB]):
@@ -174,7 +173,7 @@ class AimaUI(App):
                     Color(1, 1, 1, 1)
                     Rectangle(texture=self.agentBImg.texture,
                               pos=(pos_x * tile_x + wid.x,
-                                   n_y * tile_y - pos_y * tile_y + wid.y),
+                                   pos_y * tile_y + wid.y),
                               size=(tile_x, tile_y))
 
     def load_env(self, labels, wid, *largs):
@@ -291,12 +290,12 @@ class AimaUI(App):
         labelA, labelB = labels
         labelA.text = self.get_scores()[0]
         labelB.text = self.get_scores()[1]
-        reload(envs_list)
-        reload(agents_list)
+        reload(env_list)
+        reload(agent_list)
         global ALL_AGENTS
         global ALL_MAPS
-        ALL_AGENTS = agents_list.load_agents()
-        ALL_MAPS = envs_list.ALL_MAPS
+        ALL_AGENTS = agent_list.load_agents()
+        ALL_MAPS = env_list.ALL_MAPS
         spinnerA, spinnerB, spinnerMap = spinners
         spinnerA.values = sorted(
             [agent for agent in list(ALL_AGENTS.keys())]) + ["Agent A"]
@@ -321,8 +320,8 @@ class AimaUI(App):
         labelB.text = self.get_scores()[1]
         global ALL_AGENTS
         global ALL_MAPS
-        ALL_AGENTS = agents_list.load_agents()
-        ALL_MAPS = envs_list.ALL_MAPS
+        ALL_AGENTS = agent_list.load_agents()
+        ALL_MAPS = env_list.ALL_MAPS
         spinnerA, spinnerB, spinnerMap = spinners
         spinnerA.values = sorted(
             [agent for agent in list(ALL_AGENTS.keys())]) + ["Agent A"]
@@ -364,31 +363,27 @@ class AimaUI(App):
         self.labels = labels
         self.wid = wid
 
+        tmp_agents = list(sorted([agent for agent in list(ALL_AGENTS.keys())]))
+
         agentA_spinner = Spinner(
             text='Agent A',
             text_size=(95, None),
-            haligh="center",
             shorten=True,
-            values=sorted([agent for agent in list(ALL_AGENTS.keys())]) +
-            ["Agent A"],
-            size=(100, 44)
+            values=tmp_agents + ["Agent A"]
         )
 
         agentB_spinner = Spinner(
             text='Agent B',
             text_size=(95, None),
             shorten=True,
-            values=sorted([agent for agent in list(ALL_AGENTS.keys())]) +
-            ["Agent B"],
-            size=(100, 44)
+            values=tmp_agents + ["Agent B"]
         )
 
         maps_spinner = Spinner(
             text='Maps',
             text_size=(95, None),
             shorten=True,
-            values=sorted([map for map in list(ALL_MAPS.keys())]) + ["Maps"],
-            size=(100, 44)
+            values=list(sorted([map for map in list(ALL_MAPS.keys())])) + ["Maps"]
         )
 
         agentA_spinner.bind(text=self.select_agent_A)

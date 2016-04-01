@@ -62,9 +62,8 @@ class GBAgent24RClass(Agent):
             elif self.heading == 3:
                 return (self.position[0], self.position[1] - 1)
 
-        def program(xxx_todo_changeme):
+        def program(status, bump, *largs):
             """The actual agent"""
-            (status, bump) = xxx_todo_changeme
             if bump == 'Bump':
                 if self.curr == "NoOp":
                     return self.curr

@@ -102,8 +102,7 @@ class EconomicVacuumAgent_EVA01Class(Agent):
                 return retVal
             return "NoOp"
 
-        def program(xxx_todo_changeme):
-            (status, bump) = xxx_todo_changeme
+        def program(status, bump, *largs):
             if self.curr == "NoOp":
                 return self.curr
             updatePosition(bump)
