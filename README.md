@@ -1,7 +1,7 @@
 AI-Project-VacuumEnvironment
 ============================
 
-An environment to test a vacuum agent, created for a college course.
+An environment to test a vacuum agent, created for a college college project and based on a problem from "Artificial Intelligence: A Modern Approach" by Stuart Russell and Peter Norvig.
 
 ## Dependencies
 
@@ -25,7 +25,7 @@ For anything submit a personal message or fork the project to make a pull reques
 
 ## Notes
 
-This library is under development, so there may be substantial changes in the near future.
+This library is under development, so there may be substantial changes and improvements in the near future.
 
 This project is based on [aima-python](https://code.google.com/p/aima-python/) for a course of artificial intelligence. In particular, these modules have been modified to meet the new specifications:
 
@@ -35,7 +35,12 @@ This project is based on [aima-python](https://code.google.com/p/aima-python/) f
 
 ## Contributors
 
-ToDo!!!
+In this section will be mentioned all the people who have contributed to the creation of this program (the list will be in alphabetic order):
+
+* [Nrevo](https://github.com/Nrevo)  
+* [quiuquio](https://github.com/quiuquio)
+
+... toDo
 
 ## License
 
