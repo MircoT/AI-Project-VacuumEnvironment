@@ -16,7 +16,7 @@ def load_agents():
 
     for importer, modname, ispkg in pkgutil.iter_modules(agent_dir.__path__):
         if modname != 'agents':
-            reload(sys.modules['{0}.AvalonVacuumAgent'.format('agent_dir')])
+            reload(sys.modules['{0}.{1}'.format('agent_dir', modname)])
 
     all_agents = {}
 

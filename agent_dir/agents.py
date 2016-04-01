@@ -488,17 +488,27 @@ class VacuumEnvironment(XYEnvironment):
         bump = if_(agent.bump, 'Bump', 'None')
 
         neighbors = []
-        n_coordinates = []
-        for cur_n_agent in [thing for thing in self.things
-                      if isinstance(thing, Agent) and
-                      thing.location != agent.location]:
-            neighbors.append(cur_n_agent)
-        for neighbor in neighbors:
-            loc = neighbor.location
-            n_coordinates.append((loc[0]-agent.location[0],
-                                  loc[1]-agent.location[1]))
 
-        return status, bump, n_coordinates
+        for cur_n_agent in [thing for thing in self.things
+                            if isinstance(thing, Agent)]:
+            loc = cur_n_agent.location
+            agent_type = getattr(cur_n_agent, 'name',
+                                 cur_n_agent.__class__.__name__)
+            if getattr(cur_n_agent, 'id', None) is not None:
+                id_ = ("{0}".format(cur_n_agent.id),
+                       "{0}".format(agent_type)
+                       )
+            else:
+                id_ = ("{0}".format(id(cur_n_agent)),
+                       "{0}".format(agent_type)
+                       )
+            neighbors.append((
+                id_,
+                (loc[0]-agent.location[0],
+                 loc[1]-agent.location[1]))
+            )
+
+        return status, bump, neighbors
 
     def execute_action(self, agent, action):
         if action == 'Suck':

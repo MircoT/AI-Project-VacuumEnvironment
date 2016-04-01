@@ -7,6 +7,10 @@ An environment to test a vacuum agent, created for a college college project and
 
 You must have [kivy](http://kivy.org/#home) installed on your system.
 
+* [Download Kivy](https://kivy.org/#download)
+* [Install Kivy on Windows](https://kivy.org/docs/installation/installation-windows.html)
+* [Install kivy on Mac](https://kivy.org/docs/installation/installation-osx.html)
+
 ## Run the application
 
 If you have installed all the dependencies, you can run the program with:
@@ -15,12 +19,69 @@ If you have installed all the dependencies, you can run the program with:
 python aima-ui-2a.py
 
 # To open the GUI with 4 Agent
-python aima-ui-2a.py
+python aima-ui-4a.py
 ```
-For Windows and Mac you can follow the istructions here:
 
-* [Start Kivy on Windows](http://kivy.org/docs/installation/installation-windows.html#start-a-kivy-application)
-* [Start kivy on Mac](http://kivy.org/docs/installation/installation-macosx.html#start-any-kivy-application)
+## Add an Agent
+
+You can write your own agent and add it to the environment. The procedure is simply, you have to follow these steps:
+
+* Create a file in `agent_dir`, for example named `MyNewAgent.py`
+* Add a class named like the file and ended with `Class`. In this example will be `MyNewAgentClass`
+* Your class have to inherit from `Agent` class
+* Insert your class in the list of imported module in `agent_dir/__init__.py`
+
+Below we have an example `MyAgent.py` with some useful details:
+
+```python
+from . agents import *
+
+
+class MyNewAgentClass(Agent):
+
+    def __init__(self, x=2, y=2):
+        Agent.__init__(self)
+
+        ##
+        # Personalize the identifier of this class.
+        # Will be used instead of the class name
+        # in neighbours info
+        self.name = 'ExampleAgent'
+
+        def program(status, bump, neighbors):
+            """Main function of the Agent.
+
+            Params:
+                status (string): 'Dirty' or 'Clean'
+                bump (string): 'Bump' or 'None'
+                neighbors (list of tuples): [
+                        ( (agent_id, agent_type), (r_x, r_y) ),
+                        ...,
+                        ...
+                    ]
+
+            Returns:
+                 (string): one of these commands:
+                            - 'Suck'
+                            - 'GoNorth'
+                            - 'GoSouth'
+                            - 'GoWest'
+                            - 'GoEast'
+                            - 'NoOp' or 'Noop'
+
+            """
+            ##
+            # id is assigned by the environment
+            # in aima-ui-4a
+            print(self.id)
+            print(status, bump, neighbors)
+
+            return 'NoOp'
+
+
+        self.program = program
+
+```
 
 ## Contributing
 

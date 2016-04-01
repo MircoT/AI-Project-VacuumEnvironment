@@ -186,18 +186,29 @@ class VacuumEnv(App):
         self._loading.dismiss()
         self._load_done.open()
 
-    def select_map(self, instance, data, *largs):
+    def select_map(self, t_btn_random, label_steps, instance, data, *largs):
         self._wid.clear()
         self._env = self._maps.get(data, None)
         if self._env is not None:
             self._env = self._env()
+            self._step = 0
+            label_steps.text = '{0}'.format(self._step)
+            for name, agent in self._agent_objs.items():
+                agent.__init__()
+                if agent is not None:
+                    if t_btn_random.state == 'down':
+                        self._env.add_thing(agent,
+                                            location=self._env.random_location())
+                    else:
+                        self._env.add_thing(agent,
+                                            location=self._env.start_from)
         self._wid.set_tile_size(self._env)
         self._wid.draw(self._env)
 
     def select_agent(self, agent_id, t_btn_random, spinner, text, *largs):
-        if self._env is None or text in ['agent_1', 'agent_2', 'agent_3', 'agent_4']:
+        if text in ['agent_1', 'agent_2', 'agent_3', 'agent_4']:
             spinner.text = agent_id
-            if self._agent_objs[agent_id] is not None:
+            if self._env is not None and self._agent_objs[agent_id] is not None:
                 self._env.delete_thing(self._agent_objs[agent_id])
             self._agent_objs[agent_id] = None
         else:
@@ -205,12 +216,13 @@ class VacuumEnv(App):
                 self._env.delete_thing(self._agent_objs[agent_id])
             self._agent_objs[agent_id] = self._agents[text]()
             self._agent_objs[agent_id].id = agent_id
-            if t_btn_random.state == 'down':
-                self._env.add_thing(self._agent_objs[agent_id],
-                                    location=self._env.random_location())
-            else:
-                self._env.add_thing(self._agent_objs[agent_id],
-                                    location=self._env.start_from)
+            if self._env is not None:
+                if t_btn_random.state == 'down':
+                    self._env.add_thing(self._agent_objs[agent_id],
+                                        location=self._env.random_location())
+                else:
+                    self._env.add_thing(self._agent_objs[agent_id],
+                                        location=self._env.start_from)
         self._wid.draw(self._env)
 
     def step(self, *largs, **kwargs):
@@ -429,7 +441,7 @@ class VacuumEnv(App):
                                          label_agent_04,
                                      ])
 
-        spinn_map.bind(text=self.select_map)
+        spinn_map.bind(text=partial(self.select_map, t_btn_random, label_steps))
         spinn_agent_01.bind(text = partial(self.select_agent, spinn_agent_01.id, t_btn_random,))
         spinn_agent_02.bind(text = partial(self.select_agent, spinn_agent_02.id, t_btn_random,))
         spinn_agent_03.bind(text = partial(self.select_agent, spinn_agent_03.id, t_btn_random,))
